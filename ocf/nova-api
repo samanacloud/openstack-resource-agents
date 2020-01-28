@@ -9,6 +9,7 @@
 # Authors:      Sébastien Han
 # Mainly inspired by the Glance API resource agent written by Martin Gerhard
 # Loschwitz from Hastexo: http://goo.gl/whLpr
+# Modified for Samanagroup by: Fabian Baena
 #
 # Support:      openstack@lists.openstack.org
 # License:      Apache Software License (ASL) 2.0
@@ -23,9 +24,10 @@
 #   OCF_RESKEY_pid
 #   OCF_RESKEY_os_username
 #   OCF_RESKEY_os_password
-#   OCF_RESKEY_os_tenant_name
+#   OCF_RESKEY_os_domain
 #   OCF_RESKEY_keystone_get_token_url
 #   OCF_RESKEY_additional_parameters
+#   OCF_RESKEY_url
 #######################################################################
 # Initialization:
 
@@ -250,13 +252,13 @@ nova_api_monitor() {
     if [ -n "$OCF_RESKEY_os_username" ] && [ -n "$OCF_RESKEY_os_password" ] \
         && [ -n "$OCF_RESKEY_os_tenant_name" ] \
         && [ -n "$OCF_RESKEY_keystone_get_token_url" ]; then
-        token=`curl -s -d  "{\"auth\":{\"passwordCredentials\": \
-            {\"username\": \"$OCF_RESKEY_os_username\", \
-            \"password\": \"$OCF_RESKEY_os_password\"}, \
-            \"tenantName\": \"$OCF_RESKEY_os_tenant_name\"}}" \
-            -H "Content-type: application/json" \
-            $OCF_RESKEY_keystone_get_token_url | \
-            tr ',' '\n' | grep '"id":' \ | cut -d'"' -f4 | head --lines 1`
+        token=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
+            \"methods\": [\"password\"], \"password\": \
+                {\"user\": {\"name\": \"$OCF_RESKEY_os_username\", \
+                \"password\":\"$OCF_RESKEY_os_password\", \
+                \"domain\": {\"name\": \"$OCF_RESKEY_os_domain\"}}}}}}" \
+            -H "Content-type: application/json" $OCF_RESKEY_keystone_get_token_url | \
+            grep "X-Subject-Token" | cut -d':' -f2 | tr -d '\r')
         http_code=`curl --write-out %{http_code} --output /dev/null \
             -sH "X-Auth-Token: $token" $OCF_RESKEY_url`
         rc=$?
