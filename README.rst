@@ -1,6 +1,8 @@
 Pacemaker High Availability resource agents for OpenStack
 =========================================================
 
+This repository was copied from https://opendev.org/x/openstack-resource-agents.
+
 This repository contains a collection of Pacemaker_ `resource agents`_
 (RAs) which can be used to provide highly available OpenStack services
 managed within Pacemaker_ clusters.
