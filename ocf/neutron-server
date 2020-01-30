@@ -230,6 +230,7 @@ neutron_server_status() {
     local pid
     local rc
 
+    ocf_log debug "status"
     if [ ! -f $OCF_RESKEY_pid ]; then
         ocf_log info "OpenStack Neutron Server (neutron-server) is not running"
         return $OCF_NOT_RUNNING
