@@ -262,7 +262,7 @@ neutron_server_monitor() {
     # Check the response code of the "List API versions" call.
     # If it's 200, we consider neutron-server is properly running.
     if [ -n "$OCF_RESKEY_url" ] && [ -n "$OCF_RESKEY_os_username" ] \
-        && [ -n "$OCF_RESKEY_os_password" ] && [ -n "$OCF_RESKEY_os_tenant_name" ] \
+        && [ -n "$OCF_RESKEY_os_password" ] && [ -n "$OCF_RESKEY_os_domain" ] \
         && [ -n "$OCF_RESKEY_keystone_get_token_url" ]; then
         token=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
             \"methods\": [\"password\"], \"password\": \
