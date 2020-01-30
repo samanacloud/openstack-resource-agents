@@ -267,6 +267,9 @@ nova_api_monitor() {
                 "(nova-api): $rc and $http_code"
             return $OCF_NOT_RUNNING
         fi
+    else
+        ocf_log error "Invalid configuration"
+        return $OCF_ERR_INSTALLED
     fi
 
     ocf_log debug "OpenStack Nova API (nova-api) monitor succeeded"

@@ -279,6 +279,9 @@ neutron_server_monitor() {
                 "(neutron-server): $rc and $http_code"
             return $OCF_NOT_RUNNING
         fi
+    else
+        ocf_log error "Invalid configuration"
+        return $OCF_ERR_INSTALLED
     fi
 
     ocf_log debug "OpenStack Neutron Server (neutron-server) monitor succeeded"
