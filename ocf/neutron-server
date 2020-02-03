@@ -182,7 +182,7 @@ Additional parameters to pass on to the OpenStack Neutron Server (neutron-server
 </parameters>
 
 <actions>
-<action name="start" timeout="20" />
+<action name="start" timeout="60" />
 <action name="stop" timeout="20" />
 <action name="status" timeout="20" />
 <action name="monitor" timeout="10" interval="5" />
@@ -291,7 +291,6 @@ neutron_server_monitor() {
 neutron_server_start() {
     local rc
 
-    ocf_log debug "status"
     neutron_server_status
     rc=$?
     if [ $rc -eq $OCF_SUCCESS ]; then
