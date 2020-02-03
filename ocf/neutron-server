@@ -306,7 +306,7 @@ neutron_server_start() {
     su ${OCF_RESKEY_user} -s /bin/sh -c "${OCF_RESKEY_binary} \
         --config-file=$OCF_RESKEY_config \
         --config-file=$OCF_RESKEY_plugin_config \
-        --log-file=/var/log/neutron-server.log \
+        --log-file=/var/log/neutron/neutron-server.log \
         $OCF_RESKEY_additional_parameters"' >> /dev/null 2>&1 & echo $!' \
         > $OCF_RESKEY_pid
 
