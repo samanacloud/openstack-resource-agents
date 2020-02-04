@@ -167,7 +167,7 @@ Additional parameters to pass on to the OpenStack ImageService (glance-registry)
 </parameters>
 
 <actions>
-<action name="start" timeout="20" />
+<action name="start" timeout="60" />
 <action name="stop" timeout="20" />
 <action name="status" timeout="20" />
 <action name="monitor" timeout="30" interval="20" />
