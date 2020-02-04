@@ -41,12 +41,16 @@ OCF_RESKEY_config_default="/etc/glance/glance-api.conf"
 OCF_RESKEY_user_default="glance"
 OCF_RESKEY_pid_default="$HA_RSCTMP/$OCF_RESOURCE_INSTANCE.pid"
 OCF_RESKEY_client_binary_default="glance"
+OCF_RESKEY_url_default="http://127.0.0.1:9292/v2/images"
+OCF_RESKEY_keystone_get_token_url_def="http://127.0.0.1:5000/v2.0/tokens"
 
 : ${OCF_RESKEY_binary=${OCF_RESKEY_binary_default}}
 : ${OCF_RESKEY_config=${OCF_RESKEY_config_default}}
 : ${OCF_RESKEY_user=${OCF_RESKEY_user_default}}
 : ${OCF_RESKEY_pid=${OCF_RESKEY_pid_default}}
 : ${OCF_RESKEY_client_binary=${OCF_RESKEY_client_binary_default}}
+: ${OCF_RESKEY_url=${OCF_RESKEY_url_default}}
+: ${OCF_RESKEY_keystone_get_token_url=${OCF_RESKEY_keystone_get_token_url_def}}
 
 #######################################################################
 
@@ -137,12 +141,21 @@ The domain to use when logging into ImageService (glance-api) for monitoring pur
 <content type="string" />
 </parameter>
 
-<parameter name="os_auth_url" unique="0" required="0">
+<parameter name="url" unique="0" required="0">
 <longdesc lang="en">
-The URL pointing to this ImageService (glance-api) instance to use when logging in for monitoring purposes
+The default URL to use for monitoring this instance (glance-api) via curl. Important note: the monitor function doesn't accept http return code different than 200, for instance redirection code will generate an error. Don't forget the '/images' at the end of your url endpoint. For example http://127.0.0.1:9292/v2/ won't work and http://127.0.0.1:9292/v2/images will.
 </longdesc>
-<shortdesc lang="en">ImageService (glance-api) URL for monitoring login</shortdesc>
-<content type="string" />
+<shortdesc lang="en">OpenStack Glance API (glance-api) monitor url</shortdesc>
+<content type="string" default="${OCF_RESKEY_url_default}" />
+</parameter>
+
+<parameter name="keystone_get_token_url" unique="0" required="0">
+<longdesc lang="en">
+The default URL to use to acquire a Glance API (glance-api) token for monitoring this instance
+of OpenStack Glance API (glance-api)
+</longdesc>
+<shortdesc lang="en">OpenStack Glance API (glance-api) url</shortdesc>
+<content type="string" default="${OCF_RESKEY_keystone_get_token_url_def}" />
 </parameter>
 
 <parameter name="client_binary" unique="0" required="0">
