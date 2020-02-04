@@ -251,13 +251,13 @@ glance_registry_monitor() {
     if [ -n "$OCF_RESKEY_os_username" ] && [ -n "$OCF_RESKEY_os_password" ] \
         && [ -n "$OCF_RESKEY_os_domain" ] \
         && [ -n "$OCF_RESKEY_keystone_get_token_url" ]; then
-        token=`curl -s -d  "{\"auth\":{\"passwordCredentials\": \
-            {\"username\": \"$OCF_RESKEY_os_username\", \
-            \"password\": \"$OCF_RESKEY_os_password\"}, \
-            \"domain\": \"$OCF_RESKEY_os_domain\"}}" \
-            -H "Content-type: application/json" \
-            $OCF_RESKEY_keystone_get_token_url | \
-            tr ',' '\n' | grep '"id":' | cut -d'"' -f4 | head --lines 1`
+        token=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
+            \"methods\": [\"password\"], \"password\": \
+                {\"user\": {\"name\": \"$OCF_RESKEY_os_username\", \
+                \"password\":\"$OCF_RESKEY_os_password\", \
+                \"domain\": {\"name\": \"$OCF_RESKEY_os_domain\"}}}}}}" \
+            -H "Content-type: application/json" $OCF_RESKEY_keystone_get_token_url | \
+            grep "X-Subject-Token" | cut -d':' -f2 | tr -d '\r')
         http_code=`curl --write-out %{http_code} --output /dev/null \
             -sH "X-Auth-Token: $token" $OCF_RESKEY_url`
         rc=$?
