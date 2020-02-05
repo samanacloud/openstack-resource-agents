@@ -253,7 +253,7 @@ glance_api_monitor() {
     # Monitor the RA by retrieving the image list
     if [ -n "$OCF_RESKEY_os_username" ] && [ -n "$OCF_RESKEY_os_password" ] \
         && [ -n "$OCF_RESKEY_os_domain" ] \
-        && \ [ -n "$OCF_RESKEY_os_auth_url" ]; then
+        && [ -n "$OCF_RESKEY_os_auth_url" ]; then
         token=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
             \"methods\": [\"password\"], \"password\": \
                 {\"user\": {\"name\": \"$OCF_RESKEY_os_username\", \
