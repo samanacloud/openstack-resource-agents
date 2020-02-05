@@ -183,7 +183,7 @@ Additional parameters to pass on to the OpenStack Neutron Server (neutron-server
 
 <actions>
 <action name="start" timeout="60" />
-<action name="stop" timeout="20" />
+<action name="stop" timeout="60" />
 <action name="status" timeout="20" />
 <action name="monitor" timeout="10" interval="5" />
 <action name="validate-all" timeout="5" />
