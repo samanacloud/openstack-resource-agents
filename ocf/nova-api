@@ -264,7 +264,7 @@ nova_api_monitor() {
         rc=$?
         if [ $rc -ne 0 ] || [ $http_code -ne 200 ]; then
             ocf_log err "Failed to connect to the OpenStack Nova API" \
-                "(nova-api): $rc and $http_code"
+                "(nova-api): rc=$rc and http_code=$http_code token=$token"
             return $OCF_NOT_RUNNING
         fi
     else
