@@ -41,7 +41,7 @@ OCF_RESKEY_config_default="/etc/glance/glance-registry.conf"
 OCF_RESKEY_user_default="glance"
 OCF_RESKEY_pid_default="$HA_RSCTMP/$OCF_RESOURCE_INSTANCE.pid"
 OCF_RESKEY_url_default="http://127.0.0.1:9191/images"
-OCF_RESKEY_keystone_get_token_url_def="http://127.0.0.1:5000/v2.0/tokens"
+OCF_RESKEY_keystone_get_token_url_def="http://127.0.0.1:5000/v3/auth/tokens"
 
 : ${OCF_RESKEY_binary=${OCF_RESKEY_binary_default}}
 : ${OCF_RESKEY_config=${OCF_RESKEY_config_default}}
@@ -249,15 +249,21 @@ glance_registry_monitor() {
     # Check whether we are supposed to monitor by logging into glance-registry
     # and do it if that's the case.
     if [ -n "$OCF_RESKEY_os_username" ] && [ -n "$OCF_RESKEY_os_password" ] \
-        && [ -n "$OCF_RESKEY_os_domain" ] \
-        && [ -n "$OCF_RESKEY_keystone_get_token_url" ]; then
-        token=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
+        && [ -n "$OCF_RESKEY_os_domain" ] ; then
+        keystone_ret=$(curl -i -s -d "{\"auth\": {\"identity\":{ \
             \"methods\": [\"password\"], \"password\": \
                 {\"user\": {\"name\": \"$OCF_RESKEY_os_username\", \
                 \"password\":\"$OCF_RESKEY_os_password\", \
                 \"domain\": {\"name\": \"$OCF_RESKEY_os_domain\"}}}}}}" \
-            -H "Content-type: application/json" $OCF_RESKEY_keystone_get_token_url | \
-            grep "X-Subject-Token" | cut -d':' -f2 | tr -d '\r')
+            -H "Content-type: application/json" $OCF_RESKEY_keystone_get_token_url)
+        http_code=$(echo "$keystone_ret" | head -n1)
+        token=$(echo "$keystone_ret" | \
+            grep "X-Subject-Token" | cut -d':' -f2 | tr -d ' \r')
+        if [ -z "$token" ]; then
+            ocf_log err "Unable to get a valid token." \
+                "(keystone): http_code=$http_code"
+            return $OCF_ERR_GENERIC
+        fi
         http_code=`curl --write-out %{http_code} --output /dev/null \
             -sH "X-Auth-Token: $token" $OCF_RESKEY_url`
         rc=$?
