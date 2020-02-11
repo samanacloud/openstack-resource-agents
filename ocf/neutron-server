@@ -269,7 +269,7 @@ neutron_server_monitor() {
                 \"domain\": {\"name\": \"$OCF_RESKEY_os_domain\"}}}}}}" \
             -H "Content-type: application/json" $OCF_RESKEY_keystone_get_token_url)
         http_code=$(echo "$keystone_ret" | head -n1)
-        token=$(echo "$keystone_ret" | head -n1)
+        token=$(echo "$keystone_ret" | \
             grep "X-Subject-Token" | cut -d':' -f2 | tr -d ' \r')
         if [ -z "$token" ]; then
             ocf_log err "Unable to get a valid token." \
