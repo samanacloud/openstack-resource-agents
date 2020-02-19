@@ -222,7 +222,7 @@ nova_vnc_console_monitor() {
     rc=$?
     if [ $rc -ne 0 ]; then
         ocf_log err "Nova VNC Console doesn't seem to listen on his default" \
-            "port: $rc"
+            "port: $OCF_RESKEY_console_port"
         return $OCF_NOT_RUNNING
     fi
 
