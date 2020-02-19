@@ -271,7 +271,7 @@ nova_conductor_monitor() {
         fi
     else
         masterpid=$(cat $OCF_RESKEY_pid)
-        pid=$(ps --forest -o pid -g $(ps -o sid= -p $masterpid) | tail -n 1)
+        pid=$(ps --forest -o pid -g $(ps -o sid= -p $masterpid) | tr -d ' ' | tail -n 1)
         # check the connections according to the PID
         console_db_check=`netstat -punt | \
             grep -s "$OCF_RESKEY_database_server_port" | grep -s "$pid" | \
